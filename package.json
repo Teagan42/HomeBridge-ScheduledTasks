@@ -1,0 +1,51 @@
+{
+  "private": true,
+  "displayName": "",
+  "name": "homebridge-scheduled-calls",
+  "version": "0.1.0",
+  "description": "Exposes HomeKit Accessories to automate the scheduling of calls, text messages and fax.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/constructorfloeet/HomeBridge-ScheduledCalls.git"
+  },
+  "bugs": {
+    "url": "https://github.com/constructorfleet/HomeBridge-ScheduledCalls/issues"
+  },
+  "engines": {
+    "node": ">=10.17.0",
+    "homebridge": ">0.4.53"
+  },
+  "main": "dist/index.js",
+  "scripts": {
+    "lint": "eslint src/**.ts",
+    "watch": "npm run build && npm link && nodemon",
+    "build": "rimraf ./dist && tsc",
+    "prepublishOnly": "npm run lint && npm run build"
+  },
+  "keywords": [
+    "homebridge-plugin",
+    "school-closings",
+    "parole",
+    "on-call",
+    "rehab",
+    "scheulder",
+    "call",
+    "sms",
+    "tasks"
+  ],
+  "dependencies": {
+    "badges": "^4.17.0",
+    "homebridge": "^1.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^14.0.14",
+    "@typescript-eslint/eslint-plugin": "^3.4.0",
+    "@typescript-eslint/parser": "^3.4.0",
+    "eslint": "^7.3.1",
+    "nodemon": "^2.0.4",
+    "rimraf": "^3.0.2",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.5"
+  }
+}
