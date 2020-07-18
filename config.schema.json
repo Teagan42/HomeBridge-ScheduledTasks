@@ -91,8 +91,36 @@
           "name": {
             "type": "string",
             "title": "Name",
+            "minLength": 3,
             "default": "Morning Schedule",
             "description": "Schedule's name used for naming generated HomeKit accessories.",
+            "required": true
+          },
+          "from": {
+            "type": "string",
+            "title": "Originating Phone Number",
+            "description": "Phone number to originate the communication.",
+            "required": true
+          },
+          "to": {
+            "type": "string",
+            "title": "Destination Phone Number",
+            "description": "Phone number to call.",
+            "required": true
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "TwilML bin URL or raw TwilML text.",
+            "minLength": 5,
+            "required": true
+          },
+          "fail_after": {
+            "type": "integer",
+            "title": "Maximum Duration",
+            "default": 5,
+            "minimum": 1,
+            "description": "Minutes to wait before considering failure.",
             "required": true
           },
           "hour": {
@@ -199,6 +227,9 @@
               "expanded": true,
               "items": [
                 "schedules[].name",
+                "schedules[].from",
+                "schedules[].to",
+                "schedules[].message",
                 {
                   "type": "div",
                   "display": "flex",
