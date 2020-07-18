@@ -3,14 +3,263 @@
   "pluginType": "platform",
   "singular": true,
   "schema": {
-    "type": "object",
-    "properties": {
-      "name": {
-        "title": "Name",
-        "type": "string",
-        "required": true,
-        "default": "Example Dynamic Platform"
+    "twilio": {
+      "title": "Twilio",
+      "type": "object",
+      "properties": {
+        "account_sid": {
+          "type": "string",
+          "title": "Account SID",
+          "required": true
+        },
+        "auth_token": {
+          "title": "Authentication Token",
+          "type": "string",
+          "required": true
+        },
+        "default_from": {
+          "title": "Default Origination Number",
+          "type": "string",
+          "required": true
+        }
+      }
+    },
+    "schedules": {
+      "title": "Schedules",
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object",
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "frequency": {
+                  "const": "WEEK"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "days_of_week": {
+                  "minItems": 1
+                }
+              },
+              "required": [
+                "days_of_week"
+              ]
+            },
+            "else": {
+              "properties": {
+                "days_of_week": {
+                  "minItems": 0
+                }
+              },
+              "required": [
+                "interval"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "process_response": {
+                  "const": true
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "positive_matches": {
+                  "minItems": 1
+                }
+              },
+              "required": [
+                "positive_matches"
+              ]
+            },
+            "else": {
+              "properties": {
+                "positive_matches": {
+                  "minItems": 0
+                }
+              }
+            }
+          }
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "default": "Morning Schedule",
+            "description": "Schedule's name used for naming generated HomeKit accessories.",
+            "required": true
+          },
+          "hour": {
+            "type": "integer",
+            "title": "Hour",
+            "default": 5,
+            "minimum": 0,
+            "maximum": 23,
+            "required": true
+          },
+          "minute": {
+            "type": "integer",
+            "title": "Minute",
+            "default": 0,
+            "minimum": 0,
+            "maximum": 23,
+            "required": true
+          },
+          "frequency": {
+            "type": "string",
+            "title": "Frequency",
+            "default": "WEEK",
+            "enum": [
+              "HOUR",
+              "DAY",
+              "WEEK"
+            ],
+            "required": true
+          },
+          "interval": {
+            "type": "integer",
+            "title": "Interval",
+            "default": 1,
+            "minimum": 1
+          },
+          "days_of_week": {
+            "type": "array",
+            "title": "Days of Week",
+            "items": {
+              "type": "string",
+              "enum": [
+                "SUNDAY",
+                "MONDAY",
+                "TUESDAY",
+                "WEDNESDAY",
+                "THURSDAY",
+                "FRIDAY",
+                "SATURDAY"
+              ]
+            }
+          },
+          "process_response": {
+            "type": "boolean",
+            "title": "Process response?",
+            "default": false
+          },
+          "positive_matches": {
+            "type": "array",
+            "title": "Positive Match Phrases",
+            "default": [],
+            "items": {
+              "type": "string",
+              "title": "Phrase or RegEx"
+            }
+          }
+        }
       }
     }
-  }
+  },
+  "layout": [
+    {
+      "title": "Twilio",
+      "expandable": true,
+      "expanded": true,
+      "type": "fieldset",
+      "items": [
+        {
+          "key": "twilio.account_sid"
+        },
+        {
+          "key": "twilio.auth_token",
+          "type": "password"
+        },
+        {
+          "key": "twilio.default_from"
+        }
+      ]
+    },
+    {
+      "title": "Schedules",
+      "expandable": true,
+      "expanded": true,
+      "type": "fieldset",
+      "items": [
+        {
+          "key": "schedules",
+          "type": "array",
+          "notitle": true,
+          "items": [
+            {
+              "notitle": true,
+              "type": "fieldset",
+              "expandable": true,
+              "expanded": true,
+              "items": [
+                "schedules[].name",
+                {
+                  "type": "div",
+                  "display": "flex",
+                  "title": "Time of Day",
+                  "flex-direction": "row",
+                  "items": [
+                    {
+                      "key": "schedules[].hour",
+                      "type": "number",
+                      "flex": "2 2 150px"
+                    },
+                    {
+                      "key": "schedules[].minute",
+                      "type": "number",
+                      "flex": "2 2 150px"
+                    }
+                  ]
+                },
+                {
+                  "type": "div",
+                  "display": "flex",
+                  "title": "Every",
+                  "flex-direction": "row",
+                  "items": [
+                    {
+                      "key": "schedules[].interval",
+                      "type": "number",
+                      "no_title": true,
+                      "flex": "0"
+                    },
+                    {
+                      "key": "schedules[].frequency",
+                      "no_title": true,
+                      "flex": "1"
+                    }
+                  ]
+                },
+                {
+                  "type": "checkboxes",
+                  "key": "schedules[].days_of_week",
+                  "condition": {
+                    "functionBody": "return (model.schedules[arrayIndices[0]].frequency === 'WEEK' )"
+                  }
+                },
+                "schedules[].process_response",
+                {
+                  "key": "schedules[].positive_matches",
+                  "type": "array",
+                  "notitle": true,
+                  "condition": {
+                    "functionBody": "return (model.schedules[arrayIndices[0]].process_response === true)"
+                  },
+                  "items": [
+                    "schedules[].positive_matches[]"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
