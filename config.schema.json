@@ -20,6 +20,7 @@
         "default_from": {
           "title": "Default Origination Number",
           "type": "string",
+          "pattern": "^([+][0-9]+)? [(]{0,1}[0-9]{1,4}[)]?[-\\s\\./0-9]*$",
           "required": true
         }
       }
@@ -99,13 +100,23 @@
           "from": {
             "type": "string",
             "title": "Originating Phone Number",
-            "description": "Phone number to originate the communication.",
-            "required": true
+            "pattern": "^([+][0-9]+)? [(]{0,1}[0-9]{1,4}[)]?[-\\s\\./0-9]*$",
+            "required": false
           },
           "to": {
             "type": "string",
             "title": "Destination Phone Number",
-            "description": "Phone number to call.",
+            "pattern": "^([+][0-9]+)? [(]{0,1}[0-9]{1,4}[)]?[-\\s\\./0-9]*$",
+            "required": true
+          },
+          "communication_type": {
+            "type": "string",
+            "title": "Type",
+            "default": "VOICE",
+            "enum": [
+              "VOICE",
+              "SMS"
+            ],
             "required": true
           },
           "message": {
@@ -120,7 +131,6 @@
             "title": "Maximum Duration",
             "default": 5,
             "minimum": 1,
-            "description": "Minutes to wait before considering failure.",
             "required": true
           },
           "hour": {
@@ -227,6 +237,7 @@
               "expanded": true,
               "items": [
                 "schedules[].name",
+                "schedules[].communication_type",
                 "schedules[].from",
                 "schedules[].to",
                 "schedules[].message",
